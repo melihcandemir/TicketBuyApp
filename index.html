@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bilet Uygulaması</title>
+    <link rel="shortcut icon" href="./javascript.png" type="image/x-icon" />
+
+    <!-- Tailwind (geliştirme için CDN; üretimde derlenmiş CSS kullanın) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#0d9488" },
+          },
+        },
+        darkMode: "class",
+      };
+    </script>
+  </head>
+  <body
+    id="container"
+    class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col"
+  >
+    <div class="container mx-auto px-2 py-6 flex flex-col">
+      <!-- Başlık -->
+      <h1 class="text-2xl md:text-4xl font-bold text-center mb-6 text-primary">
+        Sinema Bilet Uygulaması
+      </h1>
+
+      <!-- Koltuklar Alanı -->
+      <div class="flex flex-col items-center mb-6">
+        <div
+          class="grid grid-cols-10 grid-rows-5 gap-2 w-full max-w-3xl"
+          id="seat-grid"
+        >
+          <!-- Koltuk kutuları -->
+        </div>
+      </div>
+
+      <!-- Sahne -->
+      <div class="flex flex-col items-center mt-auto mb-2">
+        <div
+          class="w-full max-w-3xl h-12 bg-primary rounded-b-lg flex items-center justify-center text-white font-bold text-lg shadow-lg"
+        >
+          Sahne
+        </div>
+      </div>
+    </div>
+
+    <!-- Film Seçimi -->
+    <div class="flex flex-col items-center mb-6">
+      <label for="film-select" class="mb-2 font-semibold">Film Seçiniz:</label>
+      <select
+        id="film-select"
+        class="w-full max-w-xs px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
+      >
+        <option value="20">Film 1</option>
+        <option value="25">Film 2</option>
+        <option value="30">Film 3</option>
+      </select>
+    </div>
+
+    <!-- koltuk bilgisi -->
+    <div class="flex flex-col items-center">
+      <div class="flex items-center gap-3 mb-6">
+        <div
+          class="px-2 seat-box flex items-center justify-center rounded cursor-pointer bg-gray-300 dark:bg-gray-700 h-10 md:h-14 aspect-square font-semibold"
+        >
+          <span>Boş</span>
+        </div>
+        <div
+          class="text-white px-2 seat-box flex items-center justify-center rounded cursor-pointer bg-primary dark:bg-primary h-10 md:h-14 aspect-square font-semibold"
+        >
+          <span>Seçili</span>
+        </div>
+        <div
+          class="text-white px-2 seat-box flex items-center justify-center rounded cursor-pointer bg-red-400 dark:bg-red-700 h-10 md:h-14 aspect-square font-semibold"
+        >
+          <span>Dolu</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seçili Koltuk Bilgisi -->
+    <div class="flex flex-col items-center mb-6">
+      <div
+        id="selected-info"
+        class="w-full max-w-2xl p-4 rounded bg-gray-200 dark:bg-gray-800 text-center shadow"
+      >
+        <p>
+          <span id="count" class="text-rose-700 dark:text-rose-900 font-bold"
+            >0</span
+          >
+          adet bilet için ödenecek tutar
+          <span id="amount" class="text-rose-700 dark:text-rose-900 font-bold"
+            >0</span
+          >
+          TL'dir
+        </p>
+      </div>
+    </div>
+
+    <!-- satın alma işlemi -->
+    <div class="flex items-center justify-center">
+      <button
+        id="buyButton"
+        type="button"
+        class="focus:outline-none text-white bg-primary hover:bg-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-primary dark:hover:bg-teal-700"
+      >
+        Satın Al
+      </button>
+      <button
+        id="clearButton"
+        type="button"
+        class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700"
+      >
+        Temizle
+      </button>
+    </div>
+
+    <!-- Dark/Light Mod Toggle -->
+    <button
+      id="theme-toggle"
+      class="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-primary text-white shadow-lg hover:bg-teal-700 transition-colors"
+    >
+      <span id="theme-icon">🌙</span>
+    </button>
+
+    <script src="js/storage.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
