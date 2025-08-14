@@ -96,6 +96,13 @@ function select(e) {
       seat.classList.toggle("text-white");
       // seçili koltuk class'ı
       seat.classList.toggle("qSelected");
+
+      // Mobil cihazlarda hover durumunu temizle
+      seat.blur();
+      // Touch event'lerini temizle
+      if (e.type === "touchend") {
+        e.preventDefault();
+      }
     }
   }
   calculate();
