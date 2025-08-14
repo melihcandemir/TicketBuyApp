@@ -96,8 +96,6 @@ function select(e) {
       seat.classList.toggle("text-white");
       // seçili koltuk class'ı
       seat.classList.toggle("qSelected");
-
-      location.reload();
     }
   }
   calculate();
