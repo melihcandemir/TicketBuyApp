@@ -189,7 +189,7 @@ function seatBox() {
     for (let col = 0; col < 10; col++) {
       const div = document.createElement("div");
       div.className =
-        "seat-box flex items-center justify-center rounded cursor-pointer bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-400 hover:text-white transition-colors h-10 md:h-14 font-semibold";
+        "seat-box flex items-center justify-center rounded cursor-pointer bg-gray-300 dark:bg-gray-700 md:hover:bg-gray-400 md:dark:hover:bg-gray-400 md:hover:text-white transition-colors h-10 md:h-14 font-semibold";
       div.dataset.row = String(row + 1);
       div.dataset.col = String(col + 1);
       div.textContent = `${String.fromCharCode(65 + row)}${col + 1}`;
