@@ -1,6 +1,6 @@
 class Storagex {
   // secili koltuklar key
-  static keySelecedSeats = "keySelecedSeats";
+  static selectedSeatsKey = "keySelectedSeats";
   // satılmış koltuklar key
   static keyFullSeats = "keyFullSeats";
   // seçili film key
@@ -11,10 +11,10 @@ class Storagex {
     //
     let selectedSeats;
     //
-    if (localStorage.getItem(this.keySelecedSeats) === null) {
+    if (localStorage.getItem(this.selectedSeatsKey) === null) {
       selectedSeats = [];
     } else {
-      selectedSeats = JSON.parse(localStorage.getItem(this.keySelecedSeats));
+      selectedSeats = JSON.parse(localStorage.getItem(this.selectedSeatsKey));
     }
 
     return selectedSeats;
@@ -36,19 +36,20 @@ class Storagex {
 
   // local storage silme
   static clearFunction() {
+    localStorage.removeItem(this.selectedSeatsKey);
     localStorage.removeItem(this.keyFullSeats);
-    localStorage.removeItem(this.keySelecedSeats);
     localStorage.removeItem(this.keySelectedFilm);
   }
 
   // kaydedilen filmi geri çağırma
   static getSelectedFilmIndexFromStorage() {
-    return localStorage.getItem(this.keySelectedFilm);
+    const saved = localStorage.getItem(this.keySelectedFilm);
+    return saved ? JSON.parse(saved) : 0;
   }
 
   // seçili koltukarı storage'a ekleme
   static addSelectedSeatToStorage(indexs) {
-    localStorage.setItem(this.keySelecedSeats, JSON.stringify(indexs));
+    localStorage.setItem(this.selectedSeatsKey, JSON.stringify(indexs));
   }
 
   // satılmış koltukarı storage'a ekleme

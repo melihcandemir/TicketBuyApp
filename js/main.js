@@ -9,20 +9,28 @@ const buyButton = document.getElementById("buyButton");
 const clearButton = document.getElementById("clearButton");
 
 // DOM yüklendiğinde koltukları oluştur
-document.addEventListener("DOMContentLoaded", seatBox);
-document.addEventListener("DOMContentLoaded", runPageLoaded);
+document.addEventListener("DOMContentLoaded", () => {
+  seatBox();
+  runPageLoaded();
+  initTheme();
+});
 themeToggle.addEventListener("click", themFunction);
 container.addEventListener("click", select);
 buyButton.addEventListener("click", buyTicket);
-document.addEventListener("DOMContentLoaded", initTheme);
 clearButton.addEventListener("click", clearAll);
+filmSelect.addEventListener("change", () => {
+  calculate();
+  saveSelectedMovieIndexToStorage();
+});
 
 // tüm seçimleri/alışverişi temizle (theme hariç) ve sayfayı yenile
 function clearAll() {
   if (!confirm("Tüm seçimleri temizleyip sayfayı yenilemek istiyor musunuz?"))
     return;
-  // storage temizleme
+
+  // Storage temizleme
   Storagex.clearFunction();
+
   // sayfayı baştan yükle
   location.reload();
 }
@@ -81,7 +89,8 @@ function buyTicket() {
     });
 
     Storagex.addFullSeatToStorage(selectedSeatsIndex);
-    Storagex.addSelectedSeatToStorage(getSelectedSeatsIndex());
+    Storagex.addSelectedSeatToStorage([]);
+    calculate();
   }
 }
 
@@ -90,17 +99,20 @@ function select(e) {
   const selectedElement = e.target.parentElement;
   if (selectedElement && selectedElement.id === "seat-grid") {
     const seat = e.target;
-    if (seat.classList.contains("seat-box")) {
+    if (
+      seat.classList.contains("seat-box") &&
+      !seat.classList.contains("qBuy")
+    ) {
       seat.classList.toggle("bg-primary");
       seat.classList.toggle("dark:bg-primary");
       seat.classList.toggle("text-white");
       // seçili koltuk class'ı
       seat.classList.toggle("qSelected");
+      saveSelectedSeatsIndexToStorage();
+      saveSelectedMovieIndexToStorage();
     }
   }
   calculate();
-  saveSelectedSeatsIndexToStorage();
-  saveSelectedMovieIndexToStorage();
 }
 
 // işaretli koltuk sayısı
@@ -177,7 +189,7 @@ function seatBox() {
     for (let col = 0; col < 10; col++) {
       const div = document.createElement("div");
       div.className =
-        "seat-box flex items-center justify-center rounded cursor-pointer bg-gray-300 dark:bg-gray-700 hover:bg-primary dark:hover:bg-primary hover:text-white transition-colors h-10 md:h-14 font-semibold";
+        "seat-box flex items-center justify-center rounded cursor-pointer bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-400 hover:text-white transition-colors h-10 md:h-14 font-semibold";
       div.dataset.row = String(row + 1);
       div.dataset.col = String(col + 1);
       div.textContent = `${String.fromCharCode(65 + row)}${col + 1}`;
