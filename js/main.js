@@ -19,8 +19,9 @@ container.addEventListener("click", select);
 buyButton.addEventListener("click", buyTicket);
 clearButton.addEventListener("click", clearAll);
 filmSelect.addEventListener("change", () => {
-  calculate();
   saveSelectedMovieIndexToStorage();
+  loadSeatsForCurrentFilm();
+  calculate();
 });
 
 // tüm seçimleri/alışverişi temizle (theme hariç) ve sayfayı yenile
@@ -38,8 +39,14 @@ function clearAll() {
 // storage dan seçili koltuk listesini alma
 function runPageLoaded() {
   const seatBox = Array.from(document.querySelectorAll(".seat-box"));
-  const selectedSeatsIndex = Storagex.getSelectedSeatsFromStorage();
-  const buySeatsIndex = Storagex.getFullSeatsFromStorage();
+  filmSelect.selectedIndex = Storagex.getSelectedFilmIndexFromStorage();
+
+  const filmIndex = Storagex.getSelectedFilmIndexFromStorage();
+  filmSelect.selectedIndex = filmIndex;
+
+  const selectedSeatsIndex = Storagex.getSelectedSeatsFromStorage(filmIndex);
+  const buySeatsIndex = Storagex.getFullSeatsFromStorage(filmIndex);
+
   //
   seatBox.forEach((seat, index) => {
     if (selectedSeatsIndex.includes(index)) {
@@ -65,8 +72,53 @@ function runPageLoaded() {
 
   filmSelect.selectedIndex = Storagex.getSelectedFilmIndexFromStorage();
 
+  // Koltuk durumunu seçili filme göre uygula
+  loadSeatsForCurrentFilm();
   // fiyat hesaplama
   calculate();
+}
+
+// Seçili filme göre koltukları DOM'a uygula
+function loadSeatsForCurrentFilm() {
+  const seatBoxEls = Array.from(document.querySelectorAll(".seat-box"));
+  const filmIndex = filmSelect.selectedIndex;
+
+  // Tüm koltukların durumunu sıfırla
+  seatBoxEls.forEach((seat) => {
+    seat.classList.remove(
+      "qSelected",
+      "bg-primary",
+      "dark:bg-primary",
+      "text-white",
+      "qBuy",
+      "bg-red-400",
+      "dark:bg-red-700"
+    );
+  });
+
+  // Storage'dan bu film için durumları al
+  const selectedSeatsIndex = Storagex.getSelectedSeatsFromStorage(filmIndex);
+  const buySeatsIndex = Storagex.getFullSeatsFromStorage(filmIndex);
+
+  // Seçili koltuklar
+  seatBoxEls.forEach((seat, index) => {
+    if (selectedSeatsIndex.includes(index)) {
+      seat.classList.add(
+        "bg-primary",
+        "dark:bg-primary",
+        "text-white",
+        "qSelected"
+      );
+    }
+  });
+
+  // Satın alınmış koltuklar
+  seatBoxEls.forEach((seat, index) => {
+    if (buySeatsIndex.includes(index)) {
+      seat.classList.remove("qSelected", "bg-primary", "dark:bg-primary");
+      seat.classList.add("qBuy", "bg-red-400", "dark:bg-red-700", "text-white");
+    }
+  });
 }
 
 // satın alma işlemi
@@ -74,22 +126,22 @@ function buyTicket() {
   if (confirm("Satın almak istiyor musunuz?")) {
     const selectedSeats = getSelectedSeats();
     const selectedSeatsIndex = getSelectedSeatsIndex();
+    const filmIndex = filmSelect.selectedIndex;
 
-    // seçili class kaldırma
+    // seçili class kaldırma ve satın alınan olarak işaretleme
     selectedSeats.forEach((seat) => {
-      seat.classList.remove("qSelected");
-      seat.classList.remove("bg-primary");
-      seat.classList.remove("dark:bg-primary");
-      seat.classList.remove("hover:bg-primary");
-      seat.classList.remove("dark:hover:bg-primary");
-
-      seat.classList.add("qBuy");
-      seat.classList.add("bg-red-400");
-      seat.classList.add("dark:bg-red-700");
+      seat.classList.remove(
+        "qSelected",
+        "bg-primary",
+        "dark:bg-primary",
+        "hover:bg-primary",
+        "dark:hover:bg-primary"
+      );
+      seat.classList.add("qBuy", "bg-red-400", "dark:bg-red-700", "text-white");
     });
 
-    Storagex.addFullSeatToStorage(selectedSeatsIndex);
-    Storagex.addSelectedSeatToStorage([]);
+    Storagex.addFullSeatToStorage(selectedSeatsIndex, filmIndex);
+    Storagex.addSelectedSeatToStorage([], filmIndex);
     calculate();
   }
 }
@@ -133,10 +185,11 @@ function getSelectedSeatsIndex() {
   return selectedSeatsIndex;
 }
 
-// secili koltukları kaydetme
+// secili koltukları kaydetme (film'e özel)
 function saveSelectedSeatsIndexToStorage() {
   const selectedSeatsIndex = getSelectedSeatsIndex();
-  Storagex.addSelectedSeatToStorage(selectedSeatsIndex);
+  const filmIndex = filmSelect.selectedIndex;
+  Storagex.addSelectedSeatToStorage(selectedSeatsIndex, filmIndex);
 }
 
 // secili filmi kaydetme

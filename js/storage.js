@@ -6,36 +6,60 @@ class Storagex {
   // seçili film key
   static keySelectedFilm = "keySelectedFilm";
 
+  // filme özel seçili koltuk key üretici
+  static keyForSelectedSeats(filmIndex) {
+    return `${this.selectedSeatsKey}_f${filmIndex}`;
+  }
+
+  // filme özel satılmış koltuk key üretici
+  static keyForFullSeats(filmIndex) {
+    return `${this.keyFullSeats}_f${filmIndex}`;
+  }
+
   // seçili koltukları storage dan alıp listeleme
-  static getSelectedSeatsFromStorage() {
+  static getSelectedSeatsFromStorage(filmIndex) {
     //
+    const key = this.keyForSelectedSeats(filmIndex);
+    const raw = localStorage.getItem(key);
     let selectedSeats;
     //
-    if (localStorage.getItem(this.selectedSeatsKey) === null) {
+    if (localStorage.getItem(key) === null) {
       selectedSeats = [];
     } else {
-      selectedSeats = JSON.parse(localStorage.getItem(this.selectedSeatsKey));
+      selectedSeats = JSON.parse(localStorage.getItem(key));
     }
 
-    return selectedSeats;
+    // return selectedSeats;
+
+    return raw ? JSON.parse(raw) : [];
   }
 
   // satılmış koltukları listele
-  static getFullSeatsFromStorage() {
+  static getFullSeatsFromStorage(filmIndex) {
     //
+    const key = this.keyForFullSeats(filmIndex);
+    const raw = localStorage.getItem(key);
     let fullSeats;
     //
-    if (localStorage.getItem(this.keyFullSeats) === null) {
+    if (localStorage.getItem(key) === null) {
       fullSeats = [];
     } else {
-      fullSeats = JSON.parse(localStorage.getItem(this.keyFullSeats));
+      fullSeats = JSON.parse(localStorage.getItem(key));
     }
 
-    return fullSeats;
+    // return fullSeats;
+
+    return raw ? JSON.parse(raw) : [];
   }
 
   // local storage silme
   static clearFunction() {
+    // Tüm film indekslerini temizle
+    [0, 1, 2].forEach((index) => {
+      localStorage.removeItem(this.keyForSelectedSeats(index));
+      localStorage.removeItem(this.keyForFullSeats(index));
+    });
+    localStorage.removeItem(this.keySelectedFilm);
     localStorage.removeItem(this.selectedSeatsKey);
     localStorage.removeItem(this.keyFullSeats);
     localStorage.removeItem(this.keySelectedFilm);
@@ -48,17 +72,21 @@ class Storagex {
   }
 
   // seçili koltukarı storage'a ekleme
-  static addSelectedSeatToStorage(indexs) {
-    localStorage.setItem(this.selectedSeatsKey, JSON.stringify(indexs));
+  static addSelectedSeatToStorage(indexs, filmIndex) {
+    const key = this.keyForSelectedSeats(filmIndex);
+    localStorage.setItem(key, JSON.stringify(indexs));
   }
 
   // satılmış koltukarı storage'a ekleme
-  static addFullSeatToStorage(indexs) {
-    const fullSeatsIndex = this.getFullSeatsFromStorage();
+  static addFullSeatToStorage(indexs, filmIndex) {
+    const key = this.keyForFullSeats(filmIndex);
+    const fullSeatsIndex = this.getFullSeatsFromStorage(filmIndex);
     indexs.forEach((index) => {
-      fullSeatsIndex.push(index);
+      if (!fullSeatsIndex.includes(index)) {
+        fullSeatsIndex.push(index);
+      }
     });
-    localStorage.setItem(this.keyFullSeats, JSON.stringify(fullSeatsIndex));
+    localStorage.setItem(key, JSON.stringify(fullSeatsIndex));
   }
 
   // seçili filmleri storage'a ekleme
