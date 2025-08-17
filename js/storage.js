@@ -21,15 +21,6 @@ class Storagex {
     //
     const key = this.keyForSelectedSeats(filmIndex);
     const raw = localStorage.getItem(key);
-    let selectedSeats;
-    //
-    if (localStorage.getItem(key) === null) {
-      selectedSeats = [];
-    } else {
-      selectedSeats = JSON.parse(localStorage.getItem(key));
-    }
-
-    // return selectedSeats;
 
     return raw ? JSON.parse(raw) : [];
   }
@@ -39,29 +30,23 @@ class Storagex {
     //
     const key = this.keyForFullSeats(filmIndex);
     const raw = localStorage.getItem(key);
-    let fullSeats;
-    //
-    if (localStorage.getItem(key) === null) {
-      fullSeats = [];
-    } else {
-      fullSeats = JSON.parse(localStorage.getItem(key));
-    }
-
-    // return fullSeats;
 
     return raw ? JSON.parse(raw) : [];
   }
 
   // local storage silme
   static clearFunction() {
+    // film index array
+    const filmSelcet = document.getElementById("film-select");
+    const filmOptionCount = filmSelcet.options.length;
+    const optionsIndex = Array.from({ length: filmOptionCount }, (_, i) => i);
     // Tüm film indekslerini temizle
-    [0, 1, 2].forEach((index) => {
+    optionsIndex.forEach((index) => {
       localStorage.removeItem(this.keyForSelectedSeats(index));
       localStorage.removeItem(this.keyForFullSeats(index));
     });
+
     localStorage.removeItem(this.keySelectedFilm);
-    localStorage.removeItem(this.selectedSeatsKey);
-    localStorage.removeItem(this.keyFullSeats);
     localStorage.removeItem(this.keySelectedFilm);
   }
 
